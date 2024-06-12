@@ -1,8 +1,8 @@
 package users
 
 import (
-	"net/http"
-
+	"github.com/labstack/echo/v4"
+	"github.com/tryoasnafi/users/common"
 	"gorm.io/gorm"
 )
 
@@ -16,22 +16,22 @@ func NewUserHandler(db *gorm.DB) UserHandler {
 	return UserHandler{service: service}
 }
 
-func (h UserHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
-
+func (h UserHandler) GetAllUsers(c echo.Context) error {
+	return common.ErrNotImplemented
 }
 
-func (h UserHandler) GetUserById(w http.ResponseWriter, r *http.Request) {
-
+func (h UserHandler) GetUserById(c echo.Context) error {
+	return common.ErrNotImplemented
 }
 
-func (h UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
-
+func (h UserHandler) CreateUser(c echo.Context) error {
+	return common.ErrNotImplemented
 }
 
-func (h UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
-
+func (h UserHandler) UpdateUser(c echo.Context) error {
+	return common.ErrNotImplemented
 }
 
-func (h UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
-
+func (h UserHandler) DeleteUser(c echo.Context) error {
+	return common.ErrNotImplemented
 }

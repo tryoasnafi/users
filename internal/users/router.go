@@ -1,18 +1,15 @@
 package users
 
 import (
-	"net/http"
-
-	"github.com/go-chi/chi/v5"
+	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
-func Router(db *gorm.DB) http.Handler {
+
+func SetRoutes(e *echo.Group, db *gorm.DB) {
 	handler := NewUserHandler(db)
-	r := chi.NewRouter()
-	r.Get("/", handler.GetAllUsers)
-	r.Get("/{userID}", handler.GetUserById)
-	r.Put("/{userID}", handler.UpdateUser)
-	r.Delete("/{userID}", handler.DeleteUser)
-	return r
+	e.GET("/", handler.GetAllUsers)
+	e.GET("/:id", handler.GetUserById)
+	e.PUT("/:id", handler.UpdateUser)
+	e.DELETE("/:id", handler.DeleteUser)
 }
