@@ -42,7 +42,8 @@ func (h UserHandler) GetUserById(c echo.Context) error {
 	resp, err := h.service.GetUserById(uint(id))
 	if err != nil {
 		if errors.Is(err, ErrUserNotFound) {
-			return echo.NewHTTPError(http.StatusNotFound, err)
+			c.JSON(http.StatusNotFound, err)
+			return err
 		}
 		return err
 	}
