@@ -33,6 +33,16 @@ func (h UserHandler) GetAllUsers(c echo.Context) error {
 	return nil
 }
 
+//	GetUserByID
+//	@Summary	get user by given id
+//	@Schemes
+//	@Tags		users
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	UserResponse
+//	@Success	404	{object}	MessageResponse
+//	@Router		/v1/users/{id} [get]
+//	@Param		id	path	int	true	"User ID"
 func (h UserHandler) GetUserById(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -42,8 +52,8 @@ func (h UserHandler) GetUserById(c echo.Context) error {
 	resp, err := h.service.GetUserById(uint(id))
 	if err != nil {
 		if errors.Is(err, ErrUserNotFound) {
-			c.JSON(http.StatusNotFound, err)
-			return err
+			c.JSON(http.StatusNotFound, MessageResponse{Message: err.Error()})
+			return nil
 		}
 		return err
 	}
@@ -56,7 +66,7 @@ func (h UserHandler) CreateUser(c echo.Context) error {
 	if err := c.Bind(&userReq); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "bad request")
 	}
-	
+
 	if err := c.Validate(userReq); err != nil {
 		return err
 	}

@@ -46,3 +46,7 @@ type Pagination struct {
 	RecordPerPage uint `json:"record_per_page"`
 	TotalRecord   uint `json:"total_record"`
 }
+
+type MessageResponse struct {
+	Message string `json:"message"`
+}
