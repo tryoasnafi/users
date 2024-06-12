@@ -22,7 +22,9 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 }
 
 func (repo UserRepository) All() ([]User, error) {
-	return []User{}, common.ErrNotImplemented
+	users := []User{}
+	result := repo.DB.Find(&users)
+	return users, result.Error
 }
 
 func (repo UserRepository) FindById(id uint) (User, error) {

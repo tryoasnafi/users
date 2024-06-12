@@ -32,3 +32,17 @@ type UserResponse struct {
 	Email       string    `json:"email"`
 	PhoneNumber string    `json:"phone_number"`
 }
+
+type PaginationRequest struct {
+	Limit uint `json:"limit"`
+	Page  uint `json:"page"`
+}
+
+type Pagination struct {
+	Next          uint `json:"next"`
+	Prev          uint `json:"prev"`
+	CurrentPage   uint `json:"current_page"`
+	TotalPage     uint `json:"total_page"`
+	RecordPerPage uint `json:"record_per_page"`
+	TotalRecord   uint `json:"total_record"`
+}

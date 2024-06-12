@@ -8,8 +8,9 @@ import (
 
 func SetRoutes(e *echo.Group, db *gorm.DB) {
 	handler := NewUserHandler(db)
-	e.GET("/", handler.GetAllUsers)
-	e.GET("/:id", handler.GetUserById)
-	e.PUT("/:id", handler.UpdateUser)
-	e.DELETE("/:id", handler.DeleteUser)
+	userRoutes := e.Group("/users")
+	userRoutes.GET("", handler.GetAllUsers)
+	userRoutes.GET("/:id", handler.GetUserById)
+	userRoutes.PUT("/:id", handler.UpdateUser)
+	userRoutes.DELETE("/:id", handler.DeleteUser)
 }

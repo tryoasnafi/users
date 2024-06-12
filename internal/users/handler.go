@@ -1,6 +1,8 @@
 package users
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 	"github.com/tryoasnafi/users/common"
 	"gorm.io/gorm"
@@ -17,7 +19,12 @@ func NewUserHandler(db *gorm.DB) UserHandler {
 }
 
 func (h UserHandler) GetAllUsers(c echo.Context) error {
-	return common.ErrNotImplemented
+	resp, err := h.service.GetAllUsers()
+	if err != nil {
+		return err
+	}
+	c.JSON(http.StatusOK, resp)
+	return nil
 }
 
 func (h UserHandler) GetUserById(c echo.Context) error {

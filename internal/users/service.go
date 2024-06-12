@@ -23,7 +23,15 @@ func NewUserService(repo Repository) UserService {
 }
 
 func (srv UserService) GetAllUsers() ([]UserResponse, error) {
-	return []UserResponse{}, common.ErrNotImplemented
+	users, err := srv.repo.All()
+	if err != nil {
+		return []UserResponse{}, err
+	}
+	responses := make([]UserResponse, 0, len(users))
+	for _, user := range users {
+		responses = append(responses, UserToResponse(user))
+	}
+	return responses, nil
 }
 
 func (srv UserService) GetUserById(id uint) (UserResponse, error) {
