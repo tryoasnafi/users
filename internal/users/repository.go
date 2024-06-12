@@ -1,7 +1,6 @@
 package users
 
 import (
-	"github.com/tryoasnafi/users/common"
 	"gorm.io/gorm"
 )
 
@@ -41,5 +40,9 @@ func (repo UserRepository) Update(user *User) error {
 	return repo.DB.Updates(user).Error
 }
 func (repo UserRepository) Delete(id uint) error {
-	return common.ErrNotImplemented
+	result := repo.DB.Delete(&User{}, id)
+	if result.RowsAffected == 0 {
+		return ErrUserNotFound
+	}
+	return nil
 }

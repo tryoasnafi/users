@@ -1,7 +1,5 @@
 package users
 
-import "github.com/tryoasnafi/users/common"
-
 var (
 	service *UserService
 )
@@ -55,5 +53,5 @@ func (srv UserService) UpdateUser(id uint, userReq UpdateUserRequest) (User, err
 	return user, nil
 }
 func (srv UserService) DeleteUser(id uint) error {
-	return common.ErrNotImplemented
+	return srv.repo.Delete(id)
 }

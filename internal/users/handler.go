@@ -1,12 +1,12 @@
 package users
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
-	"github.com/tryoasnafi/users/common"
 	"gorm.io/gorm"
 )
 
@@ -89,5 +89,17 @@ func (h UserHandler) UpdateUser(c echo.Context) error {
 }
 
 func (h UserHandler) DeleteUser(c echo.Context) error {
-	return common.ErrNotImplemented
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Error(err)
+		return echo.NewHTTPError(http.StatusBadRequest, "need user id parameter")
+	}
+	if err := h.service.DeleteUser(uint(id)); err != nil {
+		if errors.Is(err, ErrUserNotFound) {
+			return echo.NewHTTPError(http.StatusNotFound, err)
+		}
+		return err
+	}
+	c.NoContent(http.StatusOK)
+	return nil
 }
