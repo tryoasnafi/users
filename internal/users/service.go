@@ -10,7 +10,7 @@ type Service interface {
 	GetAllUsers() ([]UserResponse, error)
 	GetUserById(id uint) (UserResponse, error)
 	CreateUser(userReq CreateUserRequest) (User, error)
-	UpdateUser(user UpdateUserRequest) (UserResponse, error)
+	UpdateUser(id uint, user UpdateUserRequest) (User, error)
 	DeleteUser(id uint) error
 }
 
@@ -46,8 +46,13 @@ func (srv UserService) CreateUser(userReq CreateUserRequest) (User, error) {
 	return user, nil
 }
 
-func (srv UserService) UpdateUser(user UpdateUserRequest) (UserResponse, error) {
-	return UserResponse{}, common.ErrNotImplemented
+func (srv UserService) UpdateUser(id uint, userReq UpdateUserRequest) (User, error) {
+	user := UserFromUpdateRequest(userReq)
+	user.ID = id
+	if err := srv.repo.Update(&user); err != nil {
+		return User{}, err
+	}
+	return user, nil
 }
 func (srv UserService) DeleteUser(id uint) error {
 	return common.ErrNotImplemented

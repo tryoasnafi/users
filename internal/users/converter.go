@@ -22,3 +22,14 @@ func UserFromCreateRequest(user CreateUserRequest) User {
 		PhoneNumber: user.PhoneNumber,
 	}
 }
+
+func UserFromUpdateRequest(user UpdateUserRequest) User {
+	return User{
+		FirstName: user.FirstName,
+		LastName: user.LastName,
+		Address: user.Address,
+		Email: user.Email,
+		DOB: user.DOB,
+		PhoneNumber: user.PhoneNumber,
+	}
+}

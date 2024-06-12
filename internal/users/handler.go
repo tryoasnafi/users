@@ -2,8 +2,10 @@ package users
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 	"github.com/tryoasnafi/users/common"
 	"gorm.io/gorm"
 )
@@ -51,7 +53,25 @@ func (h UserHandler) CreateUser(c echo.Context) error {
 }
 
 func (h UserHandler) UpdateUser(c echo.Context) error {
-	return common.ErrNotImplemented
+	userReq := UpdateUserRequest{}
+	if err := c.Bind(&userReq); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "bad request")
+	}
+	if err := c.Validate(userReq); err != nil {
+		return err
+	}
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Error(err)
+		return echo.NewHTTPError(http.StatusBadRequest, "need user id parameter")
+	}
+	user, err := h.service.UpdateUser(uint(id), userReq)
+	if err != nil {
+		return err
+	}
+
+	c.JSON(http.StatusOK, UserToResponse(user))
+	return nil
 }
 
 func (h UserHandler) DeleteUser(c echo.Context) error {

@@ -9,7 +9,7 @@ type Repository interface {
 	All() ([]User, error)
 	FindById(id uint) (User, error)
 	Add(user *User) error
-	Update(user User) error
+	Update(user *User) error
 	Delete(id uint) error
 }
 
@@ -35,8 +35,8 @@ func (repo UserRepository) Add(user *User) error {
 	return repo.DB.Create(user).Error
 }
 
-func (repo UserRepository) Update(user User) error {
-	return common.ErrNotImplemented
+func (repo UserRepository) Update(user *User) error {
+	return repo.DB.Updates(user).Error
 }
 func (repo UserRepository) Delete(id uint) error {
 	return common.ErrNotImplemented
