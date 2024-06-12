@@ -19,6 +19,9 @@ down:
 
 restart: down up
 
+test:
+	go test -v ./...
+
 build:
 	docker build -f Dockerfile.production . -t user-service:latest
 
