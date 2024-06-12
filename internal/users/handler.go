@@ -34,10 +34,13 @@ func (h UserHandler) GetUserById(c echo.Context) error {
 func (h UserHandler) CreateUser(c echo.Context) error {
 	userReq := CreateUserRequest{}
 	if err := c.Bind(&userReq); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{
-			"message": "bad request",
-		})
+		return echo.NewHTTPError(http.StatusBadRequest, "bad request")
 	}
+	
+	if err := c.Validate(userReq); err != nil {
+		return err
+	}
+
 	user, err := h.service.CreateUser(userReq)
 	if err != nil {
 		return err
