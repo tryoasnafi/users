@@ -21,11 +21,15 @@ func NewUserHandler(db *gorm.DB) UserHandler {
 }
 
 func (h UserHandler) GetAllUsers(c echo.Context) error {
-	resp, err := h.service.GetAllUsers()
+	users, err := h.service.GetAllUsers()
 	if err != nil {
 		return err
 	}
-	c.JSON(http.StatusOK, resp)
+	responses := make([]UserResponse, 0, len(users))
+	for _, user := range users {
+		responses = append(responses, UserToResponse(user))
+	}
+	c.JSON(http.StatusOK, responses)
 	return nil
 }
 

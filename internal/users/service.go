@@ -7,7 +7,7 @@ var (
 )
 
 type Service interface {
-	GetAllUsers() ([]UserResponse, error)
+	GetAllUsers() ([]User, error)
 	GetUserById(id uint) (User, error)
 	CreateUser(userReq CreateUserRequest) (User, error)
 	UpdateUser(id uint, user UpdateUserRequest) (User, error)
@@ -22,16 +22,12 @@ func NewUserService(repo Repository) UserService {
 	return UserService{repo: repo}
 }
 
-func (srv UserService) GetAllUsers() ([]UserResponse, error) {
+func (srv UserService) GetAllUsers() ([]User, error) {
 	users, err := srv.repo.All()
 	if err != nil {
-		return []UserResponse{}, err
+		return []User{}, err
 	}
-	responses := make([]UserResponse, 0, len(users))
-	for _, user := range users {
-		responses = append(responses, UserToResponse(user))
-	}
-	return responses, nil
+	return users, nil
 }
 
 func (srv UserService) GetUserById(id uint) (User, error) {
