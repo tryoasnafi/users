@@ -32,7 +32,19 @@ func (h UserHandler) GetUserById(c echo.Context) error {
 }
 
 func (h UserHandler) CreateUser(c echo.Context) error {
-	return common.ErrNotImplemented
+	userReq := CreateUserRequest{}
+	if err := c.Bind(&userReq); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "bad request",
+		})
+	}
+	user, err := h.service.CreateUser(userReq)
+	if err != nil {
+		return err
+	}
+
+	c.JSON(http.StatusOK, UserToResponse(user))
+	return nil
 }
 
 func (h UserHandler) UpdateUser(c echo.Context) error {

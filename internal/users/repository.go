@@ -8,7 +8,7 @@ import (
 type Repository interface {
 	All() ([]User, error)
 	FindById(id uint) (User, error)
-	Add(user User) error
+	Add(user *User) error
 	Update(user User) error
 	Delete(id uint) error
 }
@@ -31,8 +31,8 @@ func (repo UserRepository) FindById(id uint) (User, error) {
 	return User{}, common.ErrNotImplemented
 }
 
-func (repo UserRepository) Add(user User) error {
-	return common.ErrNotImplemented
+func (repo UserRepository) Add(user *User) error {
+	return repo.DB.Create(user).Error
 }
 
 func (repo UserRepository) Update(user User) error {

@@ -9,7 +9,7 @@ var (
 type Service interface {
 	GetAllUsers() ([]UserResponse, error)
 	GetUserById(id uint) (UserResponse, error)
-	CreateUser(user CreateUserRequest) (UserResponse, error)
+	CreateUser(userReq CreateUserRequest) (User, error)
 	UpdateUser(user UpdateUserRequest) (UserResponse, error)
 	DeleteUser(id uint) error
 }
@@ -38,8 +38,12 @@ func (srv UserService) GetUserById(id uint) (UserResponse, error) {
 	return UserResponse{}, common.ErrNotImplemented
 }
 
-func (srv UserService) CreateUser(user CreateUserRequest) (UserResponse, error) {
-	return UserResponse{}, common.ErrNotImplemented
+func (srv UserService) CreateUser(userReq CreateUserRequest) (User, error) {
+	user := UserFromCreateRequest(userReq)
+	if err := srv.repo.Add(&user); err != nil {
+		return User{}, err
+	}
+	return user, nil
 }
 
 func (srv UserService) UpdateUser(user UpdateUserRequest) (UserResponse, error) {

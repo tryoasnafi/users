@@ -11,3 +11,14 @@ func UserToResponse(user User) UserResponse {
 		PhoneNumber: user.PhoneNumber,
 	}
 }
+
+func UserFromCreateRequest(user CreateUserRequest) User {
+	return User{
+		FirstName: user.FirstName,
+		LastName: user.LastName,
+		Address: user.Address,
+		Email: user.Email,
+		DOB: user.DOB,
+		PhoneNumber: user.PhoneNumber,
+	}
+}

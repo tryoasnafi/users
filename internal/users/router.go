@@ -10,6 +10,7 @@ func SetRoutes(e *echo.Group, db *gorm.DB) {
 	handler := NewUserHandler(db)
 	userRoutes := e.Group("/users")
 	userRoutes.GET("", handler.GetAllUsers)
+	userRoutes.POST("", handler.CreateUser)
 	userRoutes.GET("/:id", handler.GetUserById)
 	userRoutes.PUT("/:id", handler.UpdateUser)
 	userRoutes.DELETE("/:id", handler.DeleteUser)
