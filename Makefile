@@ -6,7 +6,7 @@ doc:
 	@swag init \
 		--parseDependency \
 		--parseInternal \
-		-g cmd/users/main.go
+		-g cmd/api/main.go
 
 watch:
 	@docker compose -f compose.dev.yaml up --build

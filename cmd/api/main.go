@@ -3,15 +3,15 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
 	"github.com/tryoasnafi/users/common"
 	"github.com/tryoasnafi/users/database"
+	"github.com/tryoasnafi/users/internal/middlewares"
 	"github.com/tryoasnafi/users/internal/users"
 
-	httpSwagger "github.com/swaggo/http-swagger/v2"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	_ "github.com/tryoasnafi/users/docs"
 )
 
@@ -35,18 +35,16 @@ func main() {
 
 	addr := fmt.Sprintf(":%s", common.Getenv("APP_PORT", "8080"))
 
-	r := chi.NewRouter()
-	r.Route("/api/v1", func(r chi.Router) {
-		r.Use(common.ApiVersionCtx("v1"))
-		r.Mount("/users", users.Router(db))
-	})
-	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL(
-		fmt.Sprintf("http://localhost%s/docs/doc.json", addr),
-	)))
+	e := echo.New()
+
+	apiRoute := e.Group("/api")
+	apiRoute.GET("/docs/*", echoSwagger.WrapHandler)
+	
+	v1 := apiRoute.Group("/v1")
+	v1.Use(echo.WrapMiddleware(middlewares.ApiVersionCtx("1")))
+	users.SetRoutes(v1, db)
 
 	// starting the server
 	log.Println("Starting user service on port", addr)
-	if err := http.ListenAndServe(addr, r); err != nil {
-		log.Fatalf("Failed to start account service: %v", err)
-	}
+	e.Logger.Fatal(e.Start(addr))
 }

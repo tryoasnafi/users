@@ -26,7 +26,7 @@ go install github.com/swaggo/swag/cmd/swag@latest
 Generate docs
 ```sh
 swag fmt
-swag init --parseDependency --parseInternal -g cmd/users/main.go
+swag init --parseDependency --parseInternal -g cmd/api/main.go
 ```
 
 ## Development
