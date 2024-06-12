@@ -37,7 +37,7 @@ func (h UserHandler) GetUserById(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		log.Error(err)
-		return echo.NewHTTPError(http.StatusBadRequest, "need user id parameter")
+		return echo.NewHTTPError(http.StatusBadRequest, ErrNeedUserID)
 	}
 	resp, err := h.service.GetUserById(uint(id))
 	if err != nil {
@@ -80,7 +80,7 @@ func (h UserHandler) UpdateUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		log.Error(err)
-		return echo.NewHTTPError(http.StatusBadRequest, "need user id parameter")
+		return echo.NewHTTPError(http.StatusBadRequest, ErrNeedUserID)
 	}
 	user, err := h.service.UpdateUser(uint(id), userReq)
 	if err != nil {
@@ -98,7 +98,7 @@ func (h UserHandler) DeleteUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		log.Error(err)
-		return echo.NewHTTPError(http.StatusBadRequest, "need user id parameter")
+		return echo.NewHTTPError(http.StatusBadRequest, ErrNeedUserID)
 	}
 	if err := h.service.DeleteUser(uint(id)); err != nil {
 		if errors.Is(err, ErrUserNotFound) {
