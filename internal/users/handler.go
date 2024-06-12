@@ -41,6 +41,9 @@ func (h UserHandler) GetUserById(c echo.Context) error {
 	}
 	resp, err := h.service.GetUserById(uint(id))
 	if err != nil {
+		if errors.Is(err, ErrUserNotFound) {
+			return echo.NewHTTPError(http.StatusNotFound, err)
+		}
 		return err
 	}
 	c.JSON(http.StatusOK, UserToResponse(resp))
@@ -81,6 +84,9 @@ func (h UserHandler) UpdateUser(c echo.Context) error {
 	}
 	user, err := h.service.UpdateUser(uint(id), userReq)
 	if err != nil {
+		if errors.Is(err, ErrUserNotFound) {
+			return echo.NewHTTPError(http.StatusNotFound, err)
+		}
 		return err
 	}
 

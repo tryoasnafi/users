@@ -29,6 +29,9 @@ func (repo UserRepository) All() ([]User, error) {
 func (repo UserRepository) FindById(id uint) (User, error) {
 	user := User{}
 	result := repo.DB.First(&user, id)
+	if result.RowsAffected == 0 {
+		return user, ErrUserNotFound
+	}
 	return user, result.Error
 }
 
@@ -37,7 +40,11 @@ func (repo UserRepository) Add(user *User) error {
 }
 
 func (repo UserRepository) Update(user *User) error {
-	return repo.DB.Updates(user).Error
+	result := repo.DB.Updates(user)
+	if result.RowsAffected == 0 {
+		return ErrUserNotFound
+	}
+	return nil
 }
 func (repo UserRepository) Delete(id uint) error {
 	result := repo.DB.Delete(&User{}, id)
