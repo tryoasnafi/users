@@ -28,7 +28,9 @@ func (repo UserRepository) All() ([]User, error) {
 }
 
 func (repo UserRepository) FindById(id uint) (User, error) {
-	return User{}, common.ErrNotImplemented
+	user := User{}
+	result := repo.DB.First(&user, id)
+	return user, result.Error
 }
 
 func (repo UserRepository) Add(user *User) error {

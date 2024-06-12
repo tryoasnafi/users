@@ -8,7 +8,7 @@ var (
 
 type Service interface {
 	GetAllUsers() ([]UserResponse, error)
-	GetUserById(id uint) (UserResponse, error)
+	GetUserById(id uint) (User, error)
 	CreateUser(userReq CreateUserRequest) (User, error)
 	UpdateUser(id uint, user UpdateUserRequest) (User, error)
 	DeleteUser(id uint) error
@@ -34,8 +34,12 @@ func (srv UserService) GetAllUsers() ([]UserResponse, error) {
 	return responses, nil
 }
 
-func (srv UserService) GetUserById(id uint) (UserResponse, error) {
-	return UserResponse{}, common.ErrNotImplemented
+func (srv UserService) GetUserById(id uint) (User, error) {
+	user, err := srv.repo.FindById(id)
+	if err != nil {
+		return User{}, err
+	}
+	return user, nil
 }
 
 func (srv UserService) CreateUser(userReq CreateUserRequest) (User, error) {

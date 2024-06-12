@@ -30,7 +30,17 @@ func (h UserHandler) GetAllUsers(c echo.Context) error {
 }
 
 func (h UserHandler) GetUserById(c echo.Context) error {
-	return common.ErrNotImplemented
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Error(err)
+		return echo.NewHTTPError(http.StatusBadRequest, "need user id parameter")
+	}
+	resp, err := h.service.GetUserById(uint(id))
+	if err != nil {
+		return err
+	}
+	c.JSON(http.StatusOK, UserToResponse(resp))
+	return nil
 }
 
 func (h UserHandler) CreateUser(c echo.Context) error {
