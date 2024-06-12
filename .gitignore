@@ -1,0 +1,5 @@
+bin/*
+!.gitkeep
+tmp
+.env
+.air.toml
