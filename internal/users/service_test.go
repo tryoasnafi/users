@@ -2,6 +2,7 @@ package users
 
 import (
 	"errors"
+	"slices"
 	"testing"
 	"time"
 
@@ -85,6 +86,13 @@ func (repo MockRepository) Update(user *User) error {
 	return nil
 }
 func (repo MockRepository) Delete(id uint) error {
+	u := slices.DeleteFunc(mockRepoDB, func(user User) bool {
+		return user.ID == id
+	})
+	if len(u) == len(mockRepoDB) {
+		return ErrUserNotFound
+	}
+	mockRepoDB = u
 	return nil
 }
 
@@ -203,6 +211,37 @@ func TestUpdateUserService(t *testing.T) {
 			got, err := srv.UpdateUser(tt.id, tt.user)
 			assert.Equal(t, tt.user.Email, got.Email)
 			assert.ErrorIs(t, err, tt.wantErr)
+		})
+	}
+}
+
+func TestDeleteUserService(t *testing.T) {
+	tests := []struct{
+		name string
+		id uint
+		wantErr error
+	}{
+		{
+			name: "delete user id 3",
+			id: 3,
+			wantErr: nil,
+		},
+		{
+			name: "should return error user not found",
+			id: 4,
+			wantErr: ErrUserNotFound,
+		},
+	}
+	srv := UserService{repo: MockRepository{}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			totalUser := len(mockRepoDB)
+			err := srv.DeleteUser(tt.id)
+			if err != nil {
+				assert.ErrorIs(t, err, tt.wantErr)
+			} else {
+				assert.Equal(t, totalUser - 1, len(mockRepoDB))
+			}
 		})
 	}
 }
