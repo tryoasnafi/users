@@ -71,7 +71,7 @@ func (h UserHandler) GetUserById(c echo.Context) error {
 //	@Produce	json
 //	@Success	201			{object}	UserResponse
 //	@Failure	400			{object}	MessageResponse
-//	@Router		/v1/users 				[post]
+//	@Router		/v1/users 											[post]
 //	@Param		request		body		CreateUserRequest	true	"User"
 func (h UserHandler) CreateUser(c echo.Context) error {
 	userReq := CreateUserRequest{}

@@ -105,6 +105,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/internal_users.UserResponse"
                         }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/internal_users.MessageResponse"
+                        }
+                    },
                     "404": {
                         "description": "Not Found",
                         "schema": {
@@ -215,8 +221,7 @@ const docTemplate = `{
                 "email",
                 "first_name",
                 "last_name",
-                "phone_number",
-                "username"
+                "phone_number"
             ],
             "properties": {
                 "address": {
@@ -235,9 +240,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phone_number": {
-                    "type": "string"
-                },
-                "username": {
                     "type": "string"
                 }
             }

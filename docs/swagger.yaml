@@ -14,8 +14,6 @@ definitions:
         type: string
       phone_number:
         type: string
-      username:
-        type: string
     required:
     - address
     - dob
@@ -23,7 +21,6 @@ definitions:
     - first_name
     - last_name
     - phone_number
-    - username
     type: object
   internal_users.MessageResponse:
     properties:
@@ -160,6 +157,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/internal_users.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_users.MessageResponse'
         "404":
           description: Not Found
           schema:
