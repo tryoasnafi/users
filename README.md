@@ -14,6 +14,7 @@ This is users details service
 - GoDotEnv (Configuration): https://github.com/joho/godotenv
 - Go Playground Validator (Validation): https://github.com/go-playground/validator
 - Swaggo (Swagger v2): https://github.com/swaggo/swag
+- Air (Auto-reload development): https://github.com/air-verse/air
 
 ## API Specs
 API Specs in `docs` folder or you can run the project and access http://localhost:9090/api/docs/index.html
@@ -45,7 +46,7 @@ go get ./...
 ```
 4. Install Air (auto-reload) and run docker compose
 ```sh
-go install github.com/cosmtrek/air@latest
+go install github.com/air-verse/air@latest
 make watch
 ```
 > If you don't have GNU Make, you can run `docker compose -f compose.dev.yaml up -d --build`
@@ -59,7 +60,6 @@ go run cmd/migration/main.go
 ## Testing
 
 ### Run Unit Tests
-Database migration using GORM Auto migrate, make sure to set `.env`
 ```sh
 go test ./...
 ```
