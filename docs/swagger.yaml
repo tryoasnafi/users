@@ -45,6 +45,23 @@ paths:
       summary: return all users in database
       tags:
       - users
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/internal_users.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_users.MessageResponse'
+      summary: create new user in the service
+      tags:
+      - users
   /v1/users/{id}:
     get:
       consumes:

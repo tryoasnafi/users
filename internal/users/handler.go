@@ -64,6 +64,15 @@ func (h UserHandler) GetUserById(c echo.Context) error {
 	return nil
 }
 
+//	Create new user
+//	@Summary	create new user in the service
+//	@Schemes
+//	@Tags		users
+//	@Accept		json
+//	@Produce	json
+//	@Success	201			{object}	UserResponse
+//	@Failure	400			{object}	MessageResponse
+//	@Router		/v1/users 								[post]
 func (h UserHandler) CreateUser(c echo.Context) error {
 	userReq := CreateUserRequest{}
 	if err := c.Bind(&userReq); err != nil {
