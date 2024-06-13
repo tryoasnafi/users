@@ -25,18 +25,25 @@ test:
 build:
 	docker build -f Dockerfile.production . -t user-service:latest
 
+network:
+	docker network create users-service-network
+
 start-db:
 	docker run --name postgresdb \
-           --env-file ./.env \
-           -p 5432:5432 \
-           -d postgres:16
+		-p 5432:5432 \
+		--network users-service-network \
+		-e POSTGRES_USER=ayousers \
+		-e POSTGRES_PASSWORD=some@Password1221 \
+		-e POSTGRES_DB=usersdb \
+		-v users-service_postgres_data:/var/lib/postgresql/data \
+		-d postgres:16
 
 start-app:
-	docker run --name user-service_1 \
-           --env-file ./.env \
-		   --network=host \
-		   -p 8080:9090 \
-           -d user-service:latest
+	docker run --name users-service \
+        -p 9090:9090 \
+        --network users-service-network \
+        --env-file .env \
+        user-service:latest
 
 migrate-db:
 	@go run cmd/migration/main.go

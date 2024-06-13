@@ -10,7 +10,7 @@ services:
     ports:
       - 9090:9090
     networks:
-      - app_network
+      - users-service-network
     volumes:
       - .:/app
 
@@ -21,7 +21,7 @@ services:
     ports:
       - 5432:5432
     networks:
-      - app_network
+      - users-service-network
     restart: unless-stopped
     healthcheck:
       test: ['CMD', 'pg_isready', '-U', 'ayousers', '-d', 'usersdb']
@@ -30,8 +30,8 @@ services:
       retries: 5
 
 networks:
-  app_network:
+  users-service-network:
     driver: bridge
 
 volumes:
-  postgres_data: {}
+  users-service_postgres_data: {}
