@@ -29,6 +29,22 @@ info:
   title: User Details Service API
   version: "1.0"
 paths:
+  /v1/users:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/internal_users.UserResponse'
+            type: array
+      summary: return all users in database
+      tags:
+      - users
   /v1/users/{id}:
     get:
       consumes:

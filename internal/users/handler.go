@@ -20,6 +20,14 @@ func NewUserHandler(db *gorm.DB) UserHandler {
 	return UserHandler{service: service}
 }
 
+//	GetAllUsers
+//	@Summary	return all users in database
+//	@Schemes
+//	@Tags		users
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	[]UserResponse
+//	@Router		/v1/users [get]
 func (h UserHandler) GetAllUsers(c echo.Context) error {
 	users, err := h.service.GetAllUsers()
 	if err != nil {
