@@ -127,10 +127,20 @@ func (h UserHandler) UpdateUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, UserToResponse(user))
 }
 
+//	DeleteUserByID
+//	@Summary	delete a user with given id
+//	@Schemes
+//	@Tags		users
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	UserResponse
+//	@Failure	400	{object}	MessageResponse
+//	@Failure	404	{object}	MessageResponse
+//	@Router		/v1/users/{id}  [delete]
+//	@Param		id	path	int	true	"User ID"
 func (h UserHandler) DeleteUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		log.Error(err)
 		return echo.NewHTTPError(http.StatusBadRequest, ErrNeedUserID)
 	}
 	if err := h.service.DeleteUser(uint(id)); err != nil {

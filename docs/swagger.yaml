@@ -117,6 +117,33 @@ paths:
       tags:
       - users
   /v1/users/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_users.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_users.MessageResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_users.MessageResponse'
+      summary: delete a user with given id
+      tags:
+      - users
     get:
       consumes:
       - application/json
