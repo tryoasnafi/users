@@ -56,13 +56,11 @@ func (h UserHandler) GetUserById(c echo.Context) error {
 	resp, err := h.service.GetUserById(uint(id))
 	if err != nil {
 		if errors.Is(err, ErrUserNotFound) {
-			c.JSON(http.StatusNotFound, MessageResponse{Message: err.Error()})
-			return nil
+			return c.JSON(http.StatusNotFound, MessageResponse{Message: err.Error()})
 		}
 		return err
 	}
-	c.JSON(http.StatusOK, UserToResponse(resp))
-	return nil
+	return c.JSON(http.StatusOK, UserToResponse(resp))
 }
 
 //	Create new user
@@ -78,7 +76,7 @@ func (h UserHandler) GetUserById(c echo.Context) error {
 func (h UserHandler) CreateUser(c echo.Context) error {
 	userReq := CreateUserRequest{}
 	if err := c.Bind(&userReq); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "bad request")
+		return echo.NewHTTPError(http.StatusBadRequest, ErrBadRequest)
 	}
 
 	if err := c.Validate(userReq); err != nil {
@@ -108,7 +106,7 @@ func (h UserHandler) CreateUser(c echo.Context) error {
 func (h UserHandler) UpdateUser(c echo.Context) error {
 	userReq := UpdateUserRequest{}
 	if err := c.Bind(&userReq); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "bad request")
+		return echo.NewHTTPError(http.StatusBadRequest, ErrBadRequest)
 	}
 	if err := c.Validate(userReq); err != nil {
 		return err
