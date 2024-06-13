@@ -50,6 +50,17 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "create new user in the service",
+                "parameters": [
+                    {
+                        "description": "User",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_users.CreateUserRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -155,6 +166,41 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "internal_users.CreateUserRequest": {
+            "type": "object",
+            "required": [
+                "address",
+                "dob",
+                "email",
+                "first_name",
+                "last_name",
+                "phone_number",
+                "username"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "internal_users.MessageResponse": {
             "type": "object",
             "properties": {
