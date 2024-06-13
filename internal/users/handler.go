@@ -107,13 +107,12 @@ func (h UserHandler) UpdateUser(c echo.Context) error {
 	user, err := h.service.UpdateUser(uint(id), userReq)
 	if err != nil {
 		if errors.Is(err, ErrUserNotFound) {
-			return echo.NewHTTPError(http.StatusNotFound, err)
+			return c.JSON(http.StatusNotFound, MessageResponse{Message: err.Error()})
 		}
 		return err
 	}
 
-	c.JSON(http.StatusOK, UserToResponse(user))
-	return nil
+	return c.JSON(http.StatusOK, UserToResponse(user))
 }
 
 func (h UserHandler) DeleteUser(c echo.Context) error {

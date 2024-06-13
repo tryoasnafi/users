@@ -52,7 +52,6 @@ func (srv MockUserService) GetUserById(id uint) (User, error) {
 		}
 	}
 	if user.ID == 0 {
-		log.Println("Got hit with id", id)
 		return user, ErrUserNotFound
 	}
 	return user, nil
@@ -65,7 +64,21 @@ func (srv MockUserService) CreateUser(userReq CreateUserRequest) (User, error) {
 	return user, nil
 }
 func (srv MockUserService) UpdateUser(id uint, userReq UpdateUserRequest) (User, error) {
-	return User{}, nil
+	user := UserFromUpdateRequest(userReq)
+	user.ID = id
+	isFound := false
+	for _, u := range mockDB {
+		if u.ID == id {
+			u = user
+			isFound = true
+			break
+		}
+	}
+	if !isFound {
+		log.Println("Right here")
+		return User{}, ErrUserNotFound
+	}
+	return user, nil
 }
 func (srv MockUserService) DeleteUser(id uint) error {
 	return nil
@@ -201,6 +214,99 @@ func TestCreateUser(t *testing.T) {
 			assert.Equal(t, tt.expectedHTTPStatus, rec.Code)
 			assert.Equal(t, tt.expectedResponse, got)
 			assert.Equal(t, currentRecords+1, len(mockDB))
+		})
+	}
+}
+
+func TestUpdateUser(t *testing.T) {
+	type TestCase struct {
+		name               string
+		id                 uint
+		user               UpdateUserRequest
+		expectedHTTPStatus int
+		expectedResponse   any
+	}
+	tests := []TestCase {
+		{
+			name: "update user id 1",
+			id:   mockDB[0].ID,
+			user: func() UpdateUserRequest {
+				oldData := mockDB[0]
+				return UpdateUserRequest{
+					FirstName:   "New John",
+					LastName:    "New Doe",
+					DOB:         time.Date(2001, time.January, 1, 0, 0, 0, 0, time.UTC),
+					Email:       oldData.Email,
+					PhoneNumber: oldData.PhoneNumber,
+					Address:     "New Address",
+				}
+			}(),
+			expectedHTTPStatus: http.StatusOK,
+			expectedResponse: func() UserResponse {
+				oldData := mockDB[0]
+				return UserToResponse(User{
+					ID:          oldData.ID,
+					FirstName:   "New John",
+					LastName:    "New Doe",
+					DOB:         time.Date(2001, time.January, 1, 0, 0, 0, 0, time.UTC),
+					Email:       oldData.Email,
+					PhoneNumber: oldData.PhoneNumber,
+					Address:     "New Address",
+				})
+			}(),
+		},
+		{
+			name: "update user id 100, should not found",
+			id:   100,
+			user: func() UpdateUserRequest {
+				oldData := mockDB[0]
+				return UpdateUserRequest{
+					FirstName:   "New John",
+					LastName:    "New Doe",
+					DOB:         time.Date(2001, time.January, 1, 0, 0, 0, 0, time.UTC),
+					Email:       oldData.Email,
+					PhoneNumber: oldData.PhoneNumber,
+					Address:     "New Address",
+				}
+			}(),
+			expectedHTTPStatus: http.StatusNotFound,
+			expectedResponse: MessageResponse{Message: ErrUserNotFound.Error()},
+		},
+	}
+
+	e := echo.New()
+	e.Validator = &validation.CustomValidator{Validator: validator.New()}
+	h := UserHandler{service: MockUserService{}}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var buf bytes.Buffer
+			json.NewEncoder(&buf).Encode(tt.user)
+			req := httptest.NewRequest(http.MethodPut, "/api/v1/", &buf)
+			rec := httptest.NewRecorder()
+			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+			c := e.NewContext(req, rec)
+			c.SetPath("/users/:id")
+			c.SetParamNames("id")
+			c.SetParamValues(fmt.Sprintf("%d", tt.id))
+			if err := h.UpdateUser(c); err != nil {
+				t.Log(err)
+			}
+
+			assert.Equal(t, tt.expectedHTTPStatus, rec.Code)
+			
+			got := tt.expectedResponse
+			json.Unmarshal(rec.Body.Bytes(), &got)
+			switch tt.expectedResponse.(type) {
+			case UserResponse:
+				if val, ok := tt.expectedResponse.(UserResponse); ok {
+					assert.Equal(t, tt.expectedResponse, val)
+				}
+			case MessageResponse:
+				if val, ok := tt.expectedResponse.(MessageResponse); ok {
+					assert.Equal(t, tt.expectedResponse, val)
+				}
+			}
 		})
 	}
 }
