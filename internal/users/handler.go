@@ -43,7 +43,7 @@ func (h UserHandler) GetAllUsers(c echo.Context) error {
 //	@Accept		json
 //	@Produce	json
 //	@Success	200	{object}	UserResponse
-//	@Success	404	{object}	MessageResponse
+//	@Failure	404	{object}	MessageResponse
 //	@Router		/v1/users/{id} [get]
 //	@Param		id	path	int	true	"User ID"
 func (h UserHandler) GetUserById(c echo.Context) error {
@@ -72,7 +72,7 @@ func (h UserHandler) GetUserById(c echo.Context) error {
 //	@Produce	json
 //	@Success	201			{object}	UserResponse
 //	@Failure	400			{object}	MessageResponse
-//	@Router		/v1/users 								[post]
+//	@Router		/v1/users 										[post]
 func (h UserHandler) CreateUser(c echo.Context) error {
 	userReq := CreateUserRequest{}
 	if err := c.Bind(&userReq); err != nil {
