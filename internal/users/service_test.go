@@ -44,7 +44,17 @@ func (repo MockRepository) All() ([]User, error) {
 	return mockRepoDB, nil
 }
 func (repo MockRepository) FindById(id uint) (User, error) {
-	return User{}, nil
+	var user User
+	for _, u := range mockDB {
+		if u.ID == id {
+			user = u
+			break
+		}
+	}
+	if user.ID == 0 {
+		return user, ErrUserNotFound
+	}
+	return user, nil
 }
 func (repo MockRepository) Add(user *User) error {
 	return nil
@@ -74,6 +84,33 @@ func TestGetAllUsersService(t *testing.T) {
 			got, err := srv.GetAllUsers()
 			assert.NoError(t, err)
 			assert.Equal(t, len(tt.want), len(got))
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestGetUserByIdService(t *testing.T) {
+	tests := []struct{
+		name string
+		want User
+		wantErr error
+	}{
+		{
+			name: "get user id 1",
+			want: mockRepoDB[0],
+			wantErr: nil,
+		},
+		{
+			name: "get user id 200",
+			want: User{},
+			wantErr: ErrUserNotFound,
+		},
+	}
+	srv := UserService{repo: MockRepository{}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := srv.GetUserById(tt.want.ID)
+			assert.ErrorIs(t, err, tt.wantErr)
 			assert.Equal(t, tt.want, got)
 		})
 	}
