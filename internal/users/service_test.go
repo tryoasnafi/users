@@ -72,6 +72,16 @@ func (repo MockRepository) Add(user *User) error {
 	return nil
 }
 func (repo MockRepository) Update(user *User) error {
+	isFound := false
+	for _, u := range mockRepoDB {
+		if u.ID == user.ID {
+			isFound = true
+			break
+		}
+	}
+	if !isFound {
+		return ErrUserNotFound
+	}
 	return nil
 }
 func (repo MockRepository) Delete(id uint) error {
@@ -155,6 +165,44 @@ func TestCreateUserService(t *testing.T) {
 				assert.Equal(t, tt.user.Email, got.Email)
 				assert.Equal(t, 4, len(mockRepoDB) )
 			}
+		})
+	}
+}
+
+func TestUpdateUserService(t *testing.T) {
+	tests := []struct{
+		name string
+		id uint
+		user UpdateUserRequest
+		want User
+		wantErr error
+	}{
+		{
+			name: "update email user id 3 to lilywhitey9000@example.com",
+			id: 3,
+			user: UpdateUserRequest{
+				Email: "lilywhitey9000@example.com",
+				FirstName: "Lily",
+				LastName: "Whood",
+				Address: "World Tree Street",
+				DOB: time.Date(1998, time.January, 1, 0, 0, 0, 0, time.UTC),
+				PhoneNumber: "628123456780",
+			},
+			wantErr: nil,
+		},
+		{
+			name: "should return error user not found",
+			id: 4,
+			user: UpdateUserRequest{},
+			wantErr: ErrUserNotFound,
+		},
+	}
+	srv := UserService{repo: MockRepository{}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := srv.UpdateUser(tt.id, tt.user)
+			assert.Equal(t, tt.user.Email, got.Email)
+			assert.ErrorIs(t, err, tt.wantErr)
 		})
 	}
 }
