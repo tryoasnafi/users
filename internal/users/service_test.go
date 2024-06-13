@@ -1,6 +1,7 @@
 package users
 
 import (
+	"errors"
 	"testing"
 	"time"
 
@@ -45,7 +46,7 @@ func (repo MockRepository) All() ([]User, error) {
 }
 func (repo MockRepository) FindById(id uint) (User, error) {
 	var user User
-	for _, u := range mockDB {
+	for _, u := range mockRepoDB {
 		if u.ID == id {
 			user = u
 			break
@@ -57,6 +58,17 @@ func (repo MockRepository) FindById(id uint) (User, error) {
 	return user, nil
 }
 func (repo MockRepository) Add(user *User) error {
+	isEmailExists := false
+	for _, u := range mockRepoDB {
+		if u.Email == user.Email {
+			isEmailExists = true
+			break
+		}
+	}
+	if isEmailExists {
+		return errors.New("email already exists")
+	}
+	mockRepoDB = append(mockRepoDB, *user)
 	return nil
 }
 func (repo MockRepository) Update(user *User) error {
@@ -112,6 +124,37 @@ func TestGetUserByIdService(t *testing.T) {
 			got, err := srv.GetUserById(tt.want.ID)
 			assert.ErrorIs(t, err, tt.wantErr)
 			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestCreateUserService(t *testing.T) {
+	tests := []struct{
+		name string
+		user CreateUserRequest
+		wantErr error
+	}{
+		{
+			name: "create new user",
+			user: CreateUserRequest{
+				Email: "mimi@example.com",
+				FirstName: "Miri",
+				LastName: "Miri",
+				DOB: time.Now(),
+				PhoneNumber: "123",
+				Address: "OK street",
+			},
+			wantErr: nil,
+		},
+	}
+	srv := UserService{repo: MockRepository{}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := srv.CreateUser(tt.user)
+			if assert.NoError(t, err) {
+				assert.Equal(t, tt.user.Email, got.Email)
+				assert.Equal(t, 4, len(mockRepoDB) )
+			}
 		})
 	}
 }

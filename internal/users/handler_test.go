@@ -171,7 +171,6 @@ func TestGetUserByID(t *testing.T) {
 
 func TestCreateUser(t *testing.T) {
 	newUserMick := CreateUserRequest{
-		Username:    "mickmous",
 		FirstName:   "Mick",
 		LastName:    "Mous",
 		Address:     "Galaxy Street 243",
