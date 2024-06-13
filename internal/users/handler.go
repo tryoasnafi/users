@@ -91,6 +91,18 @@ func (h UserHandler) CreateUser(c echo.Context) error {
 	return c.JSON(http.StatusCreated, UserToResponse(user))
 }
 
+//	UpdateUserByID
+//	@Summary	update user details with given id
+//	@Schemes
+//	@Tags		users
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	UserResponse
+//	@Failure	400	{object}	MessageResponse
+//	@Failure	404	{object}	MessageResponse
+//	@Router		/v1/users/{id} [put]
+//	@Param		id		path	int					true	"User ID"
+//	@Param		request	body	UpdateUserRequest	true	"New User Details"
 func (h UserHandler) UpdateUser(c echo.Context) error {
 	userReq := UpdateUserRequest{}
 	if err := c.Bind(&userReq); err != nil {
@@ -101,8 +113,7 @@ func (h UserHandler) UpdateUser(c echo.Context) error {
 	}
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		log.Error(err)
-		return echo.NewHTTPError(http.StatusBadRequest, ErrNeedUserID)
+		return c.JSON(http.StatusBadRequest, MessageResponse{Message: ErrNeedUserID.Error()})
 	}
 	user, err := h.service.UpdateUser(uint(id), userReq)
 	if err != nil {

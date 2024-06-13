@@ -5,6 +5,28 @@ definitions:
       message:
         type: string
     type: object
+  internal_users.UpdateUserRequest:
+    properties:
+      address:
+        type: string
+      dob:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      phone_number:
+        type: string
+    required:
+    - address
+    - dob
+    - email
+    - first_name
+    - last_name
+    - phone_number
+    type: object
   internal_users.UserResponse:
     properties:
       address:
@@ -84,6 +106,39 @@ paths:
           schema:
             $ref: '#/definitions/internal_users.MessageResponse'
       summary: get user by given id
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: New User Details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_users.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_users.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_users.MessageResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_users.MessageResponse'
+      summary: update user details with given id
       tags:
       - users
 swagger: "2.0"
