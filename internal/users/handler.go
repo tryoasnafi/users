@@ -135,10 +135,9 @@ func (h UserHandler) DeleteUser(c echo.Context) error {
 	}
 	if err := h.service.DeleteUser(uint(id)); err != nil {
 		if errors.Is(err, ErrUserNotFound) {
-			return echo.NewHTTPError(http.StatusNotFound, err)
+			return c.JSON(http.StatusNotFound, MessageResponse{Message: err.Error()})
 		}
 		return err
 	}
-	c.NoContent(http.StatusOK)
-	return nil
+	return c.NoContent(http.StatusOK)
 }

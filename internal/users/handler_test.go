@@ -81,6 +81,16 @@ func (srv MockUserService) UpdateUser(id uint, userReq UpdateUserRequest) (User,
 	return user, nil
 }
 func (srv MockUserService) DeleteUser(id uint) error {
+	isFound := false
+	for _, u := range mockDB {
+		if u.ID == id {
+			isFound = true
+			break
+		}
+	}
+	if !isFound {
+		return ErrUserNotFound
+	}
 	return nil
 }
 
@@ -307,6 +317,46 @@ func TestUpdateUser(t *testing.T) {
 					assert.Equal(t, tt.expectedResponse, val)
 				}
 			}
+		})
+	}
+}
+
+func TestDeleteUser(t *testing.T) {
+	type TestCase struct {
+		name               string
+		id                 uint
+		expectedHTTPStatus int
+		expectedResponse   any
+	}
+	tests := []TestCase {
+		{
+			name: "delete user id 1",
+			id:   mockDB[0].ID,
+			expectedHTTPStatus: http.StatusOK,
+		},
+		{
+			name: "delete user id 100, should not found",
+			id:   100,
+			expectedHTTPStatus: http.StatusNotFound,
+		},
+	}
+
+	e := echo.New()
+	h := UserHandler{service: MockUserService{}}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodPut, "/api/v1/", nil)
+			rec := httptest.NewRecorder()
+			c := e.NewContext(req, rec)
+			c.SetPath("/users/:id")
+			c.SetParamNames("id")
+			c.SetParamValues(fmt.Sprintf("%d", tt.id))
+			if err := h.DeleteUser(c); err != nil {
+				t.Log(err)
+			}
+
+			assert.Equal(t, tt.expectedHTTPStatus, rec.Code)
 		})
 	}
 }
