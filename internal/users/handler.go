@@ -25,12 +25,7 @@ func (h UserHandler) GetAllUsers(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	responses := make([]UserResponse, 0, len(users))
-	for _, user := range users {
-		responses = append(responses, UserToResponse(user))
-	}
-	c.JSON(http.StatusOK, responses)
-	return nil
+	return c.JSON(http.StatusOK, ListUserToResponse(users))
 }
 
 //	GetUserByID

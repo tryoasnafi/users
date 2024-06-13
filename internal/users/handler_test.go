@@ -37,7 +37,7 @@ var mockDB = []User{
 type MockUserService struct {}
 
 func (srv MockUserService) GetAllUsers() ([]User, error) {
-	return []User{}, nil
+	return mockDB, nil
 }
 func (srv MockUserService) GetUserById(id uint) (User, error) {
 	var user User
@@ -61,6 +61,39 @@ func (srv MockUserService) UpdateUser(id uint, userReq UpdateUserRequest) (User,
 }
 func (srv MockUserService) DeleteUser(id uint) error {
 	return nil
+}
+
+func TestGetAllUsers(t *testing.T) {
+	tests := []struct{
+		id int
+		name string
+		expectedHTTPStatus int
+		expectedResponse []UserResponse
+	}{
+		{
+			name: "get all users endpoint",
+			expectedHTTPStatus: http.StatusOK,
+			expectedResponse: ListUserToResponse(mockDB),
+		},
+	}
+
+	e := echo.New()
+	h := UserHandler{service: MockUserService{}}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodGet, "/api/v1/", nil)
+			rec := httptest.NewRecorder()
+			c := e.NewContext(req, rec)
+			c.SetPath("/users")
+			h.GetAllUsers(c)
+		
+			got := []UserResponse{}
+			json.Unmarshal(rec.Body.Bytes(), &got)
+			assert.Equal(t, tt.expectedResponse, got)
+			assert.Equal(t, tt.expectedHTTPStatus, rec.Code)
+		})
+	}
 }
 
 func TestGetUserByID(t *testing.T) {

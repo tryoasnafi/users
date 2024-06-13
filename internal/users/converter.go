@@ -12,6 +12,14 @@ func UserToResponse(user User) UserResponse {
 	}
 }
 
+func ListUserToResponse(users []User) []UserResponse {
+	responses := make([]UserResponse, 0, len(users))
+	for _, user := range users {
+		responses = append(responses, UserToResponse(user))
+	}
+	return responses
+}
+
 func UserFromCreateRequest(user CreateUserRequest) User {
 	return User{
 		FirstName: user.FirstName,
