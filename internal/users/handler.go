@@ -79,8 +79,7 @@ func (h UserHandler) CreateUser(c echo.Context) error {
 		return err
 	}
 
-	c.JSON(http.StatusOK, UserToResponse(user))
-	return nil
+	return c.JSON(http.StatusCreated, UserToResponse(user))
 }
 
 func (h UserHandler) UpdateUser(c echo.Context) error {
