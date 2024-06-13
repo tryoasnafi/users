@@ -43,6 +43,7 @@ func (h UserHandler) GetAllUsers(c echo.Context) error {
 //	@Accept		json
 //	@Produce	json
 //	@Success	200	{object}	UserResponse
+//	@Failure	400	{object}	MessageResponse
 //	@Failure	404	{object}	MessageResponse
 //	@Router		/v1/users/{id} [get]
 //	@Param		id	path	int	true	"User ID"
