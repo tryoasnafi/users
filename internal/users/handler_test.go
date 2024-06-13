@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -75,7 +74,6 @@ func (srv MockUserService) UpdateUser(id uint, userReq UpdateUserRequest) (User,
 		}
 	}
 	if !isFound {
-		log.Println("Right here")
 		return User{}, ErrUserNotFound
 	}
 	return user, nil
